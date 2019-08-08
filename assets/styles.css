@@ -1,0 +1,9 @@
+#calculator {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 1em;
+}
+
+* {
+    border: 1px solid black;
+}
