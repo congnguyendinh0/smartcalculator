@@ -1,9 +1,120 @@
+
+body {
+    max-width: 400px;
+    max-height: 30%;
+    position : relative;
+    padding: 10% 10%;
+    margin: 10px auto;
+    letter-spacing: 5px;
+    font-size: 1.8rem;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+  }
+
+
+
+
 #calculator {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 1em;
+    border: 2px solid black;
+    padding: 10px;
+    
+   
+    border-radius: 1px;
+    background-color: #4DA1A9;
+
 }
 
-* {
-    border: 1px solid black;
+#calculator_screen {
+    grid-column: 1 / 6;
+    background-color:#D7E8BA;
+    text-align: center;
+    text-align-last: auto;
+    font-family:Poppins;
+    font-weight: bold;
+    height: 100px;
+    
 }
+
+/* Left Part & container*/
+#left_part{
+    grid-column:1/4;
+
+}
+
+#left_part_container {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+
+}
+
+#right_part{
+    grid-column:4/6;
+
+}
+
+#right_part_container {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    #left_part_container > button {
+        -moz-box-shadow:inset 0px 39px 0px -24px #FFA630;
+        -webkit-box-shadow:inset 0px 39px 0px -24px #FFA630;
+        box-shadow:inset 0px 39px 0px -24px #FFA630;
+        background-color:#FFA630;
+        -moz-border-radius:4px;
+        -webkit-border-radius:4px;
+        border-radius:4px;
+        border:1px solid #ffffff;
+        display:inline-block;
+        cursor:pointer;
+        color: black;
+        font-family:Poppins;
+        font-weight: bold;
+        font-size:15px;
+        padding:6px 15px;
+        text-decoration:none;
+        text-shadow:0px 1px 0px #FFA630;
+    }
+    button:hover {
+        background-color:#FFA630;
+    }
+    button:active {
+        position:relative;
+        top:1px;
+    }
+
+
+    
+    #right_part_container > button {
+        -moz-box-shadow:inset 0px 39px 0px -24px #611C35;
+        -webkit-box-shadow:inset 0px 39px 0px -24px #611C35;
+        box-shadow:inset 0px 39px 0px -24px #611C35;
+        background-color:#611C35;
+        -moz-border-radius:4px;
+        -webkit-border-radius:4px;
+        border-radius:4px;
+        border:1px solid #ffffff;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Poppins;
+        font-weight: bold;
+        font-size:15px;
+        padding:6px 15px;
+        text-decoration:none;
+        text-shadow:0px 1px 0px #611C35;
+    }
+    button:hover {
+        background-color:#611C35;
+    }
+    button:active {
+        position:relative;
+        top:1px;
+    }
