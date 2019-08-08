@@ -2,7 +2,7 @@ let calc = document.getElementById("calculator");
 
 // Sounds
 var bleep = new Audio();
-bleep.src = "C3.mp3";
+bleep.src = "assets/C3.mp3";
 function play_sound(){
     bleep.play(); // Play button sound now
 }
