@@ -33,7 +33,7 @@ body {
 }
 
 #calculator_screen, #result_screen {
-    overflow: auto;
+    overflow: hidden;
     text-align: right;
 }
 
@@ -121,7 +121,9 @@ button:active {
     top:1px;
 }
 
+
 #dark_mode img{
+    padding: 10% 10%;
     height: 2vh;
     background-color: #18ab29;
 	-moz-border-radius:28px;
