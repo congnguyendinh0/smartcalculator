@@ -21,12 +21,12 @@ let operator_list =[
                 {code: 111, txt: '/'},
                 {code: 106, txt: '*'}];
 
-
-document.onkeydown = function() {type_to_screen(event)};
 // Use Keyboard to calculate
+document.onkeydown = function() {type_to_screen(event)};
 function type_to_screen(event) {
     let key_code = event.which || event.keyCode;
     let calc_screen = document.getElementById("calculator_screen");
+    let result_screen = document.getElementById("result_screen");
 
     // Print out all the numbers from 0 - 9
     for (key of number_list) {
@@ -61,7 +61,8 @@ function type_to_screen(event) {
 
     // For "AC" Button (delete everything from the screen)
     if (key_code == 27) {
-        calc_screen.innerHTML = '0';
+        calc_screen.innerHTML = '';
+        result_screen.innerHTML = 0;
     }
 
     // for DEL Button (also for Backspace key)
@@ -87,10 +88,19 @@ function print_it(calc_screen, code) {
 // Setup calculator
 function setup_calculator() {
     // create screen
+    let big_screen = document.createElement("div");
+    big_screen.setAttribute("id", "big_screen");
+    calc.appendChild(big_screen);
+ 
     let calculator_screen = document.createElement("div");
     calculator_screen.setAttribute("id", "calculator_screen");
-    calc.appendChild(calculator_screen);
-    calculator_screen.innerHTML = 0;
+    big_screen.appendChild(calculator_screen);
+    calculator_screen.innerHTML = '';
+    
+    let result_screen = document.createElement("div");
+    result_screen.setAttribute("id", "result_screen");
+    big_screen.appendChild(result_screen);
+    result_screen.innerHTML = 0;
 
     // create inner left part (0-9 buttons & comma & ^2 buttons) & container
     let left_part = document.createElement("div");
@@ -140,21 +150,17 @@ function setup_calculator() {
         num_btn.innerHTML = taste;
         
         if (num_btn.innerHTML == "DEL") {
-            num_btn.onclick = function () {
+            num_btn.onclick = function() {
                 let current_strg = calculator_screen.innerHTML;
                 calculator_screen.innerHTML = current_strg.substr(0, current_strg.length - 1);
-        
-                let screen_str = calculator_screen.innerHTML;
-                if (screen_str.length == 0) {
-                    calculator_screen.innerHTML = '0';
-                };
             }
-            
         }
 
         if (num_btn.innerHTML == "AC"){
-            num_btn.onclick = function (){calculator_screen.innerHTML = '0';}
-            
+            num_btn.onclick = function() {
+                calculator_screen.innerHTML = '';
+                result_screen.innerHTML = '0';
+            }
         }
     }
     
@@ -185,6 +191,28 @@ function setup_calculator() {
             }
         };
     }
+
+    for (taste of special_values) {
+        let num_btn = document.createElement("button");
+        num_btn.setAttribute("class","btn");
+        right_part_container.appendChild(num_btn);
+        num_btn.innerHTML = taste;
+
+
+        if (num_btn.innerHTML == "=") { 
+            num_btn.onclick = function() {
+                result_screen.innerHTML = eval(calculator_screen.innerHTML);
+                calculator_screen.innerHTML = "0";
+            }
+        }
+        if (num_btn.innerHTML == "^2"){
+            num_btn.onclick = function() {
+                result_screen.innerHTML = Math.pow(calculator_screen.innerHTML,2)
+                calculator_screen.innerHTML = "";
+            }
+        }
+    }
+
 }
 
 // Sounds
