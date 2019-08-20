@@ -27,14 +27,20 @@ body {
     font-weight: bold;
     grid-column: 1 / 6;
     display: grid;
-    grid-template-rows: repeat(2, 50%);
+    grid-template-rows: repeat(2, auto auto);
     padding: 10px;
 }
 
 #calculator_screen, #result_screen {
-    height: 45px;
     overflow: auto;
     text-align: right;
+}
+
+#calculator_screen {
+    padding: 2px 0;
+    height: 21px;
+    font-size: 50%;
+    color: #424242;
 }
 
 /* Left Part & container*/
@@ -112,3 +118,4 @@ button:active {
     position:relative;
     top:1px;
 }
+
