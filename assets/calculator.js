@@ -202,7 +202,7 @@ function setup_calculator() {
         if (num_btn.innerHTML == "=") { 
             num_btn.onclick = function() {
                 result_screen.innerHTML = eval(calculator_screen.innerHTML);
-                calculator_screen.innerHTML = "0";
+                calculator_screen.innerHTML = "";
             }
         }
         if (num_btn.innerHTML == "^2"){
