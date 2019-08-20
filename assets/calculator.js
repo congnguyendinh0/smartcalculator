@@ -17,9 +17,8 @@ let operator_list =[
                 {code: 106, txt: '*'},
                 {code: 107, txt: '+'},
                 {code: 109, txt: '-'},
-                {code: 110, txt: '.'},
-                {code: 111, txt: '/'},
-                {code: 106, txt: '*'}];
+                {code: 111, txt: '/'}];
+                
 
 // Use Keyboard to calculate
 document.onkeydown = function() {type_to_screen(event)};
@@ -78,10 +77,35 @@ function type_to_screen(event) {
 }
 
 function print_it(calc_screen, code) {
-    if (calc_screen.innerHTML == 0) {   
+    if (calc_screen.innerHTML == "") {   
         calc_screen.innerHTML = code;
     } else {
         calc_screen.innerHTML += code;
+    }
+}
+
+function print_operator(calc_screen, code) {
+    if (calc_screen.innerHTML == "") {
+        calc_screen.innerHTML = "0" + code;
+    } else {
+        calc_screen.innerHTML += code;
+    }
+}
+
+// fuer komma
+function print_dot(calc_screen, code) {
+    let screen_str = calc_screen.innerHTML;
+    if (screen_str == "") {
+        calc_screen.innerHTML = "0" + code;
+    } else {
+        let last_dot_pos = calc_screen.innerHTML.lastindexof(".")   
+        let test_str = screen_str.substr(last_dot_pos + 1, screen_str.length - 1);
+
+        for (let i = 0; i < array.length; index++) {
+            const element = array[index];
+            
+        }
+        calc_screen.innerHTML += code;        
     }
 }
 
@@ -114,7 +138,7 @@ function setup_calculator() {
 
     // Keys of left part
     let left_part_numbers = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"];
-    let left_part_spec = [{code: ',', txt: '.'}, {code: '&plusmn;', txt: '-'}];
+    let left_part_special = [{code: '.', txt: '.'}, {code: '-', txt: '&plusmn;'}];
     for (taste of left_part_numbers) {
         let num_btn = document.createElement("button");
         num_btn.setAttribute("class","btn");
@@ -124,6 +148,29 @@ function setup_calculator() {
         num_btn.onclick = function () {
             print_it(calculator_screen, num_btn.innerHTML);
         };
+    }
+
+    // For dot/comma and plus/minus sign buttons
+    for (taste of left_part_special) {
+        let num_btn = document.createElement("button");
+        num_btn.setAttribute("class","btn");
+        left_part_container.appendChild(num_btn);
+        num_btn.innerHTML = taste.txt;
+        let num_txt = taste.code;
+        
+        // For dot/comma button
+        if (num_btn.innerHTML == ".") {
+            num_btn.onclick = function() {
+                let current_strg = calculator_screen.innerHTML;   
+                let check_it = current_strg.endsWith(".");
+                if (check_it == false) {
+                    print_operator(calculator_screen, num_txt);
+                }
+            }
+        }
+
+        // For plus/minus sign button
+
     }
 
 
