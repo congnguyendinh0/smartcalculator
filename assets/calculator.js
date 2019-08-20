@@ -40,7 +40,7 @@ function type_to_screen(event) {
         if (key_code == key.code) {
             // Handle the operator (replace operator if the last character on screen is also a operator)
             let current_str = calc_screen.innerHTML;
-            let last_char = current_str.substr(current_strg.length - 1, current_strg.length);
+            let last_char = current_str.substr(current_str.length - 1, current_str.length);
 
             let check_it = false;
             for (i = 0; i < operator_list.length; i++) {
@@ -74,8 +74,6 @@ function type_to_screen(event) {
             calc_screen.innerHTML = '0';
         }
     }
-
-    
 }
 
 function print_it(calc_screen, code) {
@@ -105,14 +103,18 @@ function setup_calculator() {
     left_part.appendChild(left_part_container);
 
     // Keys of left part
-    let left_part_values = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ",", "&plusmn;"];
-    for (taste of left_part_values) {
+    let left_part_numbers = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"];
+    let left_part_spec = [{code: ',', txt: '.'}, {code: '&plusmn;', txt: '-'}];
+    for (taste of left_part_numbers) {
         let num_btn = document.createElement("button");
         num_btn.setAttribute("class","btn");
         left_part_container.appendChild(num_btn);
         num_btn.innerHTML = taste;
         num_btn.addEventListener("click", play_sound);
-    };
+        num_btn.onclick = function () {
+            print_it(calculator_screen, num_btn.innerHTML);
+        };
+    }
 
 
     // create inner right part (operation buttons)  & container
@@ -126,12 +128,62 @@ function setup_calculator() {
     right_part.appendChild(right_part_container);
 
     // Keys of right part
-    let right_part_values = ["DEL", "AC", "*", "/", "+", "-", "^2", "="];
+    let right_part_special = ["DEL", "AC"];
+    let right_part_values = ["*", "/", "+", "-"];
+    let special_values = ["^2", "="];
+
+    // For "DEL" and "AC" Buttons
+    for (taste of right_part_special) {
+        let num_btn = document.createElement("button");
+        num_btn.setAttribute("class","btn");
+        right_part_container.appendChild(num_btn);
+        num_btn.innerHTML = taste;
+        
+        if (num_btn.innerHTML == "DEL") {
+            num_btn.onclick = function () {
+                let current_strg = calculator_screen.innerHTML;
+                calculator_screen.innerHTML = current_strg.substr(0, current_strg.length - 1);
+        
+                let screen_str = calculator_screen.innerHTML;
+                if (screen_str.length == 0) {
+                    calculator_screen.innerHTML = '0';
+                };
+            }
+            
+        }
+
+        if (num_btn.innerHTML == "AC"){
+            num_btn.onclick = function (){calculator_screen.innerHTML = '0';}
+            
+        }
+    }
+    
+    // For Operators buttons
     for (taste of right_part_values) {
         let num_btn = document.createElement("button");
         num_btn.setAttribute("class","btn");
         right_part_container.appendChild(num_btn);
         num_btn.innerHTML = taste;
+        num_btn.onclick = function () {
+            // Handle the operator (replace operator if the last character on screen is also a operator)
+            let current_str = calculator_screen.innerHTML;
+            let last_char = current_str.substr(current_str.length - 1, current_str.length);
+
+            let check_it = false;
+            for (i = 0; i < operator_list.length; i++) {
+                if (last_char == operator_list[i].txt) {
+                    check_it = true;
+                    i = operator_list.length;
+                }
+            }
+
+            if (check_it == true) {
+                current_str = current_str.substr(0, current_str.length - 1);
+                calculator_screen.innerHTML = current_str + this.innerHTML;
+            } else {
+                print_it(calculator_screen, this.innerHTML);
+            }
+        };
     }
 }
 
