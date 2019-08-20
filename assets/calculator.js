@@ -222,4 +222,10 @@ function play_sound() {
     bleep.play(); // Play button sound now
 }
 
+document.getElementById("dark_mode").onclick = function (){
+    document.body.style.backgroundColor="black";   
+};
+
+
+
 setup_calculator();
