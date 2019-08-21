@@ -13,7 +13,7 @@ let number_list = [{code: 48, txt: 0}, {code: 96, txt: 0},
                 {code: 56, txt: 8}, {code: 104, txt: 8},
                 {code: 57, txt: 9}, {code: 105, txt: 9}];
             
-let operator_list =[               
+let operator_list = [               
                 {code: 106, txt: '*'},
                 {code: 107, txt: '+'},
                 {code: 109, txt: '-'},
@@ -100,20 +100,16 @@ function print_dot(calc_screen, code) {
 
         let testEndsWithOp = false;                   // 
         for (let i = 0; i < operator_list.length; i++) {
+            testEndsWithOp = screen_str.endsWith(operator_list[i].txt);
 
+            if (testEndsWithOp) {
+                i = operator_list.length;
+            }
         }
 
-
-
-        if (screen_str == "") {                     // then if it is empty
-            calc_screen.innerHTML = "0" + code;     
-        }
-
-        else if(screen_str) {
-
-        }
-
-         else {  
+        if (screen_str == "" || testEndsWithOp) {                     // then if it is empty
+            calc_screen.innerHTML += 0 + code;
+        } else {  
           // double point
             let last_dot_pos = screen_str.lastIndexOf(".");     
             let test_str = screen_str.substr(last_dot_pos + 1, screen_str.length - 1);
@@ -200,7 +196,12 @@ function setup_calculator() {
             }
         }
 
-        // For plus/minus sign button
+        // For plus/minus sign button (Vorzeichen)
+        if (num_btn.innerHTML == "&plusmn;" || num_btn.innerHTML == "±") {
+            num_btn.onclick = function() {
+                calculator_screen.innerHTML += "(-";
+            }
+        }
 
     }
 
@@ -234,7 +235,7 @@ function setup_calculator() {
             }
         }
 
-        if (num_btn.innerHTML == "AC"){
+        if (num_btn.innerHTML == "AC") {
             num_btn.onclick = function() {
                 calculator_screen.innerHTML = '';
                 result_screen.innerHTML = '0';
@@ -249,8 +250,20 @@ function setup_calculator() {
         right_part_container.appendChild(num_btn);
         num_btn.innerHTML = taste;
         num_btn.onclick = function () {
-            // Handle the operator (replace operator if the last character on screen is also a operator)
+            // Check if there is already a "(" of plus/minus button (Vorzeichen)
             let current_str = calculator_screen.innerHTML;
+            let bracket_open = current_str.lastIndexOf("(");
+            let last_str = current_str.substr(bracket_open + 1, current_str.length);
+            if (bracket_open >= 0) {
+                let check_bracket_close = last_str.includes(")");
+                if (!check_bracket_close) {
+                    calculator_screen.innerHTML += ")";
+                }
+            }
+            
+
+            // Handle the operator (replace operator if the last character on screen is also a operator)
+            
             let last_char = current_str.substr(current_str.length - 1, current_str.length);
 
             let check_it = false;
@@ -270,19 +283,37 @@ function setup_calculator() {
         };
     }
 
+
+    // For equal button (gleich) and exponent button (hoch 2)
     for (taste of special_values) {
         let num_btn = document.createElement("button");
         num_btn.setAttribute("class","btn");
         right_part_container.appendChild(num_btn);
         num_btn.innerHTML = taste;
 
-
+        // For equal button (gleich) button 
         if (num_btn.innerHTML == "=") { 
             num_btn.onclick = function() {
+                // Check if there is already a "(" of plus/minus button (Vorzeichen)
+                let current_str = calculator_screen.innerHTML;
+                let bracket_open = current_str.lastIndexOf("(");
+                let last_str = current_str.substr(bracket_open + 1, current_str.length);
+                if (bracket_open >= 0) {
+                    let check_bracket_close = last_str.includes(")");
+                    if (!check_bracket_close) {
+                        calculator_screen.innerHTML += ")";
+                    }
+                }
+
+                console.log(calculator_screen.innerHTML);
+
+                // Calculate it when screen is written correctly
                 result_screen.innerHTML = eval(calculator_screen.innerHTML);
                 calculator_screen.innerHTML = "";
             }
         }
+
+        // For exponent button (hoch 2) button
         if (num_btn.innerHTML == "^2"){
             num_btn.onclick = function() {
                 result_screen.innerHTML = Math.pow(calculator_screen.innerHTML,2)
