@@ -93,20 +93,51 @@ function print_operator(calc_screen, code) {
 }
 
 // fuer komma
-function print_dot(calc_screen, code) {
+function print_dot(calc_screen, code) { 
     let screen_str = calc_screen.innerHTML;
-    if (screen_str == "") {
-        calc_screen.innerHTML = "0" + code;
-    } else {
-        let last_dot_pos = calc_screen.innerHTML.lastindexof(".")   
-        let test_str = screen_str.substr(last_dot_pos + 1, screen_str.length - 1);
+    let check_it = screen_str.endsWith(".");  // screen 
+    if (check_it == false) {                    // screen does not end with point
 
-        for (let i = 0; i < array.length; index++) {
-            const element = array[index];
-            
+        let testEndsWithOp = false;                   // 
+        for (let i = 0; i < operator_list.length; i++) {
+
         }
-        calc_screen.innerHTML += code;        
+
+
+
+        if (screen_str == "") {                     // then if it is empty
+            calc_screen.innerHTML = "0" + code;     
+        }
+
+        else if(screen_str) {
+
+        }
+
+         else {  
+          // double point
+            let last_dot_pos = screen_str.lastIndexOf(".");     
+            let test_str = screen_str.substr(last_dot_pos + 1, screen_str.length - 1);
+            let testdot =  false;
+
+            for (let i = 0; i < operator_list.length; i++) {
+                testdot= test_str.includes(operator_list[i].txt);   /// checks if element of operator list exist
+                if(testdot) {
+                    calc_screen.innerHTML += code;
+                    i = operator_list.length;
+                }
+               
+                
+            }
+            if(!screen_str.includes(code)&&testdot == false) // no operator and dot  // screen_str ninmmt nur werte aus calc_screen  
+            {
+                calc_screen.innerHTML += code;
+            }
+            
+                    
+        }
+
     }
+    
 }
 
 // Setup calculator
@@ -164,7 +195,7 @@ function setup_calculator() {
                 let current_strg = calculator_screen.innerHTML;   
                 let check_it = current_strg.endsWith(".");
                 if (check_it == false) {
-                    print_operator(calculator_screen, num_txt);
+                    print_dot(calculator_screen, num_txt);
                 }
             }
         }
