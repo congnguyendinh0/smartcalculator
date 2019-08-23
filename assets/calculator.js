@@ -1,6 +1,4 @@
 let calc = document.getElementById("calculator");
-let allowed_key = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "&plusmn;",
-                    "DEL", "AC", "*", "/", "+", "-", "^2", "="];
 let displayed_keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "*", "/", "+", "-"];
 let number_list = [{code: 48, txt: 0}, {code: 96, txt: 0}, 
                 {code: 49, txt: 1}, {code: 97, txt: 1},
@@ -74,6 +72,17 @@ function type_to_screen(event) {
             calc_screen.innerHTML = '0';
         }
     }
+
+    // for dot/comma key
+    if  (key_code == 190 || key_code == 110 || key_code == 188) {
+        let current_strg = calculator_screen.innerHTML;
+        print_dot(calculator_screen, ".");
+    }
+
+    // for Enter (equal) key
+    if  (key_code == 13) {
+        berechnen(calc_screen, result_screen);
+    }
 }
 
 function print_it(calc_screen, code) {
@@ -136,6 +145,31 @@ function print_dot(calc_screen, code) {
     
 }
 
+
+// Calculate it
+function berechnen(calculator_screen, result_screen) {
+    // Check if there is already a "(" of plus/minus button (Vorzeichen)
+    let current_str = calculator_screen.innerHTML;
+    if (current_str != "") {
+        let bracket_open = current_str.lastIndexOf("(");
+        let last_str = current_str.substr(bracket_open + 1, current_str.length);
+        if (bracket_open >= 0) {
+            let check_bracket_close = last_str.includes(")");
+            if (!check_bracket_close) {
+                calculator_screen.innerHTML += ")";
+            }
+        }
+
+        console.log("Truoc khi berechnen: " + calculator_screen.innerHTML);
+
+        // Calculate it when screen is written correctly
+        result_screen.innerHTML = eval(calculator_screen.innerHTML);
+        console.log("Scau khi berechnen: " + calculator_screen.innerHTML);
+        calculator_screen.innerHTML = '';
+        console.log("Sau khi leeren: " + calculator_screen.innerHTML);
+    }
+}
+
 // Setup calculator
 function setup_calculator() {
     // create screen
@@ -188,11 +222,8 @@ function setup_calculator() {
         // For dot/comma button
         if (num_btn.innerHTML == ".") {
             num_btn.onclick = function() {
-                let current_strg = calculator_screen.innerHTML;   
-                let check_it = current_strg.endsWith(".");
-                if (check_it == false) {
-                    print_dot(calculator_screen, num_txt);
-                }
+                let current_strg = calculator_screen.innerHTML;
+                print_dot(calculator_screen, num_txt);
             }
         }
 
@@ -242,6 +273,8 @@ function setup_calculator() {
             }
         }
     }
+
+
     
     // For Operators buttons
     for (taste of right_part_values) {
@@ -294,30 +327,19 @@ function setup_calculator() {
         // For equal button (gleich) button 
         if (num_btn.innerHTML == "=") { 
             num_btn.onclick = function() {
-                // Check if there is already a "(" of plus/minus button (Vorzeichen)
-                let current_str = calculator_screen.innerHTML;
-                let bracket_open = current_str.lastIndexOf("(");
-                let last_str = current_str.substr(bracket_open + 1, current_str.length);
-                if (bracket_open >= 0) {
-                    let check_bracket_close = last_str.includes(")");
-                    if (!check_bracket_close) {
-                        calculator_screen.innerHTML += ")";
-                    }
-                }
-
-                console.log(calculator_screen.innerHTML);
-
-                // Calculate it when screen is written correctly
-                result_screen.innerHTML = eval(calculator_screen.innerHTML);
-                calculator_screen.innerHTML = "";
+                berechnen(calculator_screen, result_screen);
             }
         }
 
         // For exponent button (hoch 2) button
         if (num_btn.innerHTML == "^2"){
             num_btn.onclick = function() {
-                result_screen.innerHTML = Math.pow(calculator_screen.innerHTML,2)
-                calculator_screen.innerHTML = "";
+                let current_str = calculator_screen.innerHTML;
+                let endChar = current_str.charAt(current_str.length-1);
+                if(!operator_list.includes(endChar)){
+                    calculator_screen.innerHTML +="^2";
+                }
+ 
             }
         }
     }
@@ -350,6 +372,7 @@ dark_mode_icon.onclick = function (){
         this.style.backgroundColor = "#333333";
     }
 };
+
 
 
 
