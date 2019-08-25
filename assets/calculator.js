@@ -336,10 +336,34 @@ function setup_calculator() {
             num_btn.onclick = function() {
                 let current_str = calculator_screen.innerHTML;
                 let endChar = current_str.charAt(current_str.length-1);
-                if(!operator_list.includes(endChar)){
-                    calculator_screen.innerHTML +="^2";
+
+                // If last character is not an operator
+                let test_operator = false;
+                for (let index = 0; index < operator_list.length; index++) {
+                    if (endChar == operator_list[index].txt) {
+                        test_operator = true;
+                        index = operator_list.length;
+                    }
                 }
- 
+
+                // If the screen does not just contain "^2"
+                if (calculator_screen.innerHTML == "^2") {
+                    test_operator = true;
+                } else {
+                    // If last 2 characters are not "^2"
+                    let current_str = calculator_screen.innerHTML;
+                    let last_str = current_str.substr(current_str.length - 2, current_str.length - 1);
+                    console.log("Last 2 characters: " + last_str);
+
+                    if (last_str == "^2") {
+                        test_operator = true;
+                    }
+                }
+
+                
+                if (!test_operator) {
+                    calculator_screen.innerHTML += "^2";
+                }
             }
         }
     }
