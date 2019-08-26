@@ -160,13 +160,34 @@ function berechnen(calculator_screen, result_screen) {
             }
         }
 
-        console.log("Truoc khi berechnen: " + calculator_screen.innerHTML);
+        // console.log("Truoc khi berechnen: " + calculator_screen.innerHTML);
+
+        let screen_txt = calculator_screen.innerHTML;
+        let index_src = 0;
+        do {
+            index_src = screen_txt.search("sqr");
+            if (index_src != -1) {
+                let first_slice_str = screen_txt.slice(0, index_src);
+                let second_slice_str = screen_txt.slice(index_src, screen_txt.length);
+                
+                let erste_klammer_pos = second_slice_str.indexOf(")");
+                let first_part = second_slice_str.slice(0, erste_klammer_pos);
+                let second_part = second_slice_str.slice(erste_klammer_pos, second_slice_str.length);
+                second_slice_str = first_part + ", 2" + second_part;
+
+                screen_txt = first_slice_str + second_slice_str;
+
+                screen_txt = screen_txt.replace("sqr", "Math.pow");
+            }
+        } while (index_src != -1);
+
+        console.log("After Replacing: " + screen_txt);
 
         // Calculate it when screen is written correctly
-        result_screen.innerHTML = eval(calculator_screen.innerHTML);
-        console.log("Scau khi berechnen: " + calculator_screen.innerHTML);
+        result_screen.innerHTML = eval(screen_txt);
+        // console.log("Scau khi berechnen: " + calculator_screen.innerHTML);
         calculator_screen.innerHTML = '';
-        console.log("Sau khi leeren: " + calculator_screen.innerHTML);
+        // console.log("Sau khi leeren: " + calculator_screen.innerHTML);
     }
 }
 
@@ -275,7 +296,6 @@ function setup_calculator() {
     }
 
 
-    
     // For Operators buttons
     for (taste of right_part_values) {
         let num_btn = document.createElement("button");
@@ -283,7 +303,7 @@ function setup_calculator() {
         right_part_container.appendChild(num_btn);
         num_btn.innerHTML = taste;
         num_btn.onclick = function () {
-            // Check if there is already a "(" of plus/minus button (Vorzeichen)
+            // Check if there is already a "(" of plus/minus button (Vorzeichen), then close it with ")"
             let current_str = calculator_screen.innerHTML;
             let bracket_open = current_str.lastIndexOf("(");
             let last_str = current_str.substr(bracket_open + 1, current_str.length);
@@ -295,8 +315,7 @@ function setup_calculator() {
             }
             
 
-            // Handle the operator (replace operator if the last character on screen is also a operator)
-            
+            // Handle the operator (replace operator if the last character on screen is also a operator) - prevent double operator
             let last_char = current_str.substr(current_str.length - 1, current_str.length);
 
             let check_it = false;
@@ -351,18 +370,44 @@ function setup_calculator() {
                     test_operator = true;
                 } else {
                     // If last 2 characters are not "^2"
-                    let current_str = calculator_screen.innerHTML;
                     let last_str = current_str.substr(current_str.length - 2, current_str.length - 1);
-                    console.log("Last 2 characters: " + last_str);
 
                     if (last_str == "^2") {
                         test_operator = true;
                     }
                 }
 
-                
                 if (!test_operator) {
-                    calculator_screen.innerHTML += "^2";
+
+                    let pos = -1;
+                    for (let i = current_str.length - 1; i >= 0; i--) {
+                        let test_new = false;
+                        for (op of operator_list) {
+                            if (op.txt == current_str[i] && current_str[i-1] != "(") {
+                                test_new = true;
+                            }
+                        }
+                        
+                        if (test_new) {
+                            pos = i;  
+                            i = -1;
+                        }
+                    }
+
+                    if (pos >= 0) {
+                        let current_slice = current_str.slice(pos+1,current_str.length);
+                        if (current_slice.startsWith("(")){
+                            current_slice = current_slice.slice(1,current_slice.length);
+                        }
+
+                        let new_str = current_str[pos] + "sqr(" + current_slice;
+
+                        let corrected_scr = current_str.slice(0, pos) + new_str;
+
+                        calculator_screen.innerHTML = corrected_scr;
+                    } else {
+                        calculator_screen.innerHTML = "sqr(" + current_str;
+                    }
                 }
             }
         }
