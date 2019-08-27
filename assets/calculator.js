@@ -19,7 +19,7 @@ let operator_list = [
                 
 
 // Use Keyboard to calculate
-document.onkeydown = function() {type_to_screen(event)};
+document.onkeydown = function() {type_to_screen(event); play_sound();};
 function type_to_screen(event) {
     let key_code = event.which || event.keyCode;
     let calc_screen = document.getElementById("calculator_screen");
@@ -226,7 +226,6 @@ function setup_calculator() {
         num_btn.setAttribute("class","btn");
         left_part_container.appendChild(num_btn);
         num_btn.innerHTML = taste;
-        num_btn.addEventListener("click", play_sound);
         num_btn.onclick = function () {
             print_it(calculator_screen, num_btn.innerHTML);
         };
@@ -365,39 +364,26 @@ function setup_calculator() {
                     }
                 }
 
-                // If the screen does not just contain "^2"
-                if (calculator_screen.innerHTML == "^2") {
-                    test_operator = true;
-                } else {
-                    // If last 2 characters are not "^2"
-                    let last_str = current_str.substr(current_str.length - 2, current_str.length - 1);
-
-                    if (last_str == "^2") {
-                        test_operator = true;
-                    }
-                }
-
+                // If the screen does not just contain "sqr("
                 if (!test_operator) {
-
                     let pos = -1;
                     for (let i = current_str.length - 1; i >= 0; i--) {
                         let test_new = false;
                         for (op of operator_list) {
+                            // If the last found operator does not belong to a plus/minus sign (Vorzeichen)
                             if (op.txt == current_str[i] && current_str[i-1] != "(") {
-                                test_new = true;
+                                pos = i;
+                                i = -1;
                             }
-                        }
-                        
-                        if (test_new) {
-                            pos = i;  
-                            i = -1;
                         }
                     }
 
                     if (pos >= 0) {
                         let current_slice = current_str.slice(pos+1,current_str.length);
                         if (current_slice.startsWith("(")){
-                            current_slice = current_slice.slice(1,current_slice.length);
+                            current_slice = current_slice.slice(1, current_slice.length);
+                        } else if (current_slice.startsWith("sqr")) {
+                            current_slice = current_slice.slice(4, current_slice.length);
                         }
 
                         let new_str = current_str[pos] + "sqr(" + current_slice;
@@ -413,13 +399,11 @@ function setup_calculator() {
         }
     }
 
-}
-
-// Sounds
-var bleep = new Audio();
-bleep.src = "assets/C3.mp3";
-function play_sound() {
-    bleep.play(); // Play button sound now
+    let all_buttons = document.querySelectorAll(".btn");
+    for (btn of all_buttons) {
+        btn.addEventListener("click", play_sound);
+    }
+    
 }
 
 // Dark mode
@@ -436,13 +420,41 @@ dark_mode_icon.onclick = function (){
     if (is_night) {
         this.setAttribute("src", "assets/images/day.png");
         this.style.backgroundColor = "#666666";
+        mute_icon.style.backgroundColor = "#666666";
     } else {
         this.setAttribute("src", "assets/images/night.png");
         this.style.backgroundColor = "#333333";
+        mute_icon.style.backgroundColor = "#333333";
     }
 };
 
+// Sounds
+var bleep = new Audio();
+bleep.src = "assets/C3.mp3";
+function play_sound() {
+    bleep.play(); // Play button sound now
+}
 
+
+//mute
+let enableMute = document.getElementById("enableMute");
+let mute_icon   =document.createElement("img");
+mute_icon.setAttribute("src", "assets/images/mute.png");
+enableMute.appendChild(mute_icon);
+mute_icon.onclick = function (){
+    enableMute.classList.toggle("mute");
+
+    var is_muted = enableMute.classList.contains("mute");
+
+    if(is_muted){
+        bleep.muted = true;
+        this.setAttribute("src", "assets/images/play.png");
+    
+    } else {
+        this.setAttribute("src", "assets/images/mute.png");
+        bleep.muted=false
+    }
+}
 
 
 setup_calculator();
